@@ -95,8 +95,8 @@ for(i=0; i<entity_max; i++)
 #define draw
 
 // Draw Player!
-draw_triangle(x, y, x-20, y-20, x+20, y-20, false);
-
+//draw_triangle(x, y, x-20, y-20, x+20, y-20, false);
+sprite_player(x, y, m_angle);
 
 /// ENTITY DRAW
 enum entity_type { wall, zombie }
@@ -316,3 +316,32 @@ return
 "0      1"+
 "        "+
 "3      2";
+
+
+#define sprite_player //(x, y, angle)
+
+var h = 20;
+
+var mx = argument0;
+var my = argument1;
+
+var ang = argument2;
+
+var ax = mx + h * cos(degtorad(ang));
+var ay = my - h * sin(degtorad(ang));
+
+var dx = mx - h/2 * cos(degtorad(ang));
+var dy = my + h/2 * sin(degtorad(ang));
+
+var l = h * 1.5 / 2;
+
+var px = l * cos(degtorad(ang+90));
+var py = l * sin(degtorad(ang+90));
+
+var bx = dx + px;
+var by = dy - py
+
+var cx = dx - px
+var cy = dy + py;
+
+draw_triangle_color(ax, ay, bx, by, cx, cy, c_white, c_white, c_white, false);
