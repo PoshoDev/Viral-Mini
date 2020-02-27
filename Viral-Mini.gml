@@ -1,64 +1,48 @@
 /*
-Hello!
-
-
-Double-click the top panel to add a code tab.
-Ctrl+Enter or F5 to run your code.
-
-
-Also check out Help in the main menu.
-
-
-Try copying the following to a new code tab for a test:
+V I R A L
+by Posho
 */
-//scripts
-
-
-
-
 
 
 // init
-trace("hi!");
+trace("V I R A L");
+trace("by Posho")
+
+
+NULL = -1;
+debug = true;
+
+
 frame = 0;
 background_color = c_black;
 
 
 x=room_width/2;
 y=room_height/2;
-
-
 spd_max = 10;
 spd_init = 2;
 
 
-/// ENTITY LIST
-// 0 type
-// 1 x
-// 2 y
-// 3 health
-// 4 speed
-// 5 range
+/// ENTITIES!
+enum ent { id, x, y, hp, spd, range };
 
 
+// Blank entity list
 entity_max = 64;
 for (i=0; i<entity_max; i++)
-    entity[i, 0] = "none";
-    
-entity[0, 0] = "zombie";
-entity[0, 1] = room_width/2+200;
-entity[0, 2] = room_height/2+200;
-entity[0, 3] = 100;
-entity[0, 4] = 2;
-entity[0, 5] = 100;
+    entity[i, 0] = NULL;
 
 
-entity[1, 0] = "zombie";
-entity[1, 1] = room_width/2-200;
-entity[1, 2] = room_height/2+200;
-entity[1, 3] = 100;
-entity[1, 4] = 2;
-entity[1, 5] = 100;
+// ENTITY DEFAULTS
+entity_default[0, ent.id] = "zombie";
+entity_default[0, ent.hp] = 100;
+entity_default[0, ent.spd] = 2;
+entity_default[0, ent.range] = 400;
+
+
+// Sandbox
+entity_create(entity_type.zombie, 100, 100);
+build_house_8(300, 300);
 
 
 #define step
@@ -90,7 +74,7 @@ for(i=0; i<entity_max; i++)
 {
     switch(entity[i,0])
     {
-        case "zombie":
+        case entity_type.zombie:
             if (point_distance(entity[i,1], entity[i,2], x, y) < entity[i,5])
             {
                 if (entity[i, 1] < x)
@@ -109,25 +93,33 @@ for(i=0; i<entity_max; i++)
 }
 
 
+
+
 #define draw
-// draw event codesd
-scr_show("hi!");
-//draw_rectangle(x-20, y-20, x+20, y+20, false)
-image_angle=32
+
+
+// Draw Player!
 draw_triangle(x, y, x-20, y-20, x+20, y-20, false);
 
 
 
 
 /// ENTITY DRAW
+enum entity_type { wall, zombie }
 
 
 for(i=0; i<entity_max; i++)
 {
-    switch(entity[i,0])
+    switch(entity[i, 0])
     {
-        case "zombie":
-            draw_roundrect_color(entity[i, 1]-20, entity[i, 2]-20, entity[i, 1]+20, entity[i, 2]+20, c_red, c_white, false);
+        case entity_type.wall:
+            draw_roundrect_color(entity[i, ent.x]-20, entity[i, ent.y]-20,
+            entity[i, ent.x]+20, entity[i, ent.y]+20, c_gray, c_gray, false);
+        break;
+        
+        case entity_type.zombie:
+            draw_roundrect_color(entity[i, ent.x]-20, entity[i, ent.y]-20,
+            entity[i, ent.x]+20, entity[i, ent.y]+20, c_red, c_red, false);
         break;
     }
 }
@@ -135,31 +127,116 @@ for(i=0; i<entity_max; i++)
 
 
 
-//draw_triangle_color(x+10, y-10, x-10, y-10, x*(10*cos(m_angle)), y+sin(m_angle), c_white, c_white, c_white, false);
-
-
 draw_line_color(x, y, mouse_x, mouse_y, c_white, c_white);
 
 
 // Cursor
 draw_set_color(c_white);
-draw_triangle(mouse_x, mouse_y-m_len/2, mouse_x-m_len, mouse_y-m_len, mouse_x+m_len, mouse_y-m_len, false);
-draw_triangle(mouse_x, mouse_y+m_len/2, mouse_x-m_len, mouse_y+m_len, mouse_x+m_len, mouse_y+m_len, false);
-draw_triangle(mouse_x-m_len/2, mouse_y, mouse_x-m_len, mouse_y-m_len, mouse_x-m_len, mouse_y+m_len, false);
-draw_triangle(mouse_x+m_len/2, mouse_y, mouse_x+m_len, mouse_y-m_len, mouse_x+m_len, mouse_y+m_len, false);
+draw_triangle(mouse_x, mouse_y-m_len/2, mouse_x-m_len, mouse_y-m_len,
+mouse_x+m_len, mouse_y-m_len, false);
+draw_triangle(mouse_x, mouse_y+m_len/2, mouse_x-m_len, mouse_y+m_len,
+mouse_x+m_len, mouse_y+m_len, false);
+draw_triangle(mouse_x-m_len/2, mouse_y, mouse_x-m_len, mouse_y-m_len,
+mouse_x-m_len, mouse_y+m_len, false);
+draw_triangle(mouse_x+m_len/2, mouse_y, mouse_x+m_len, mouse_y-m_len,
+mouse_x+m_len, mouse_y+m_len, false);
 
 
 
 
+#define entity_create //(id, x, y)
+// Create an object, I think!
+
+
+for(i=0; entity[i, ent.id]!=NULL && i<entity_max; i++){} // Find an empty spot on the list.
+
+
+if (i==entity_max)
+{
+    if (debug)
+        trace("ERROR: Could not create instance. Array is too small.");
+    return;
+}
+
+
+entity[i, ent.id] = argument0;
+entity[i, ent.x] = argument1;
+entity[i, ent.y] = argument2;
+entity[i, ent.hp] = 100;
+entity[i, ent.spd] = 2;
+entity[i, ent.range] = 400;
+
+
+if (debug)
+    trace("Entity created. ID:"+i+" type: "+entity[i, ent.id]+
+    " at ("+entity[i, ent.x]+", "+entity[i, ent.y]+")");
+
+
+return;
 
 
     
+#define build //(design, x, y)
+{
+    var px = argument1;
+    var py = argument2;
+    var i=0, j=0, k=0, pick, put;
+    
+    if (debug)
+        trace("/!\ Loaded building map. Size: "+string_length(argument0))
+    
+    for(i=0; i<string_length(argument0); i++)
+    {
+        pick = string_char_at(argument0, i);
+        
+        switch(pick)
+        {
+            case 'X': place=entity_type.wall;   break;
+            case '|': break;
+        }
+        
+        switch (pick)
+        {
+            case '\':
+                j = 0;
+                k++;
+                trace("jump")
+            break;
+            
+            case ' ':
+                j++;
+            break;
+            
+            default:
+                entity_create(place, px+(j*40), py+(k*40))
+                j++;
+            break;
+        }
+    }
+    
+    return;
+}
 
 
 
 
-#define scr_show
-// define scripts like this
-draw_text(10, 10 + sin(frame / 0.7) * 3, argument0);
-draw_text(10, 32 + sin(frame / 0.7) * 3, "y = "+y);
-draw_text(10, 64 + sin(frame / 0.7) * 3, "angle = "+point_direction(x, y, mouse_x, mouse_y));
+#define build_house_8 //(x, y)
+{
+
+
+design[0] =
+"XXXXXXXX\"+
+"X      X\"+
+"X      X\"+
+"X      X\"+
+"X      X\"+
+"X      X\"+
+"X      X\"+
+"XXX||XXX\"
+
+
+build(design[0], argument0, argument1);
+
+
+return;
+}
