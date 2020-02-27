@@ -131,6 +131,8 @@ mouse_x-m_len, mouse_y+m_len, false);
 draw_triangle(mouse_x+m_len/2, mouse_y, mouse_x+m_len, mouse_y-m_len,
 mouse_x+m_len, mouse_y+m_len, false);
 
+//sprite_make(sprite_get, 100, 100);
+
 
 
 #define entity_create //(id, x, y)
@@ -178,6 +180,8 @@ return;
         {
             case 'X': place=entity_type.wall;   break;
             case '|': break;
+            
+            case 'z': place=entity_type.zombie; break;
         }
         
         switch (pick)
@@ -207,7 +211,11 @@ return;
 #define build_house_8 //(x, y)
 {
 
-design[0] =
+    switch(irandom_range(0,1))
+    {
+    
+case 0:
+design =
 "XXXXXXXX\"+
 "X      X\"+
 "X      X\"+
@@ -216,10 +224,26 @@ design[0] =
 "X      X\"+
 "X      X\"+
 "XXX  XXX\"
+break;
 
-    build(design[0], argument0, argument1);
+case 1:
+design =
+"XXXXXXXX\"+
+"XXXXXXXX\"+
+"XX z  XX\"+
+"XX    XX\"+
+"XX    XX\"+
+"XX  z XX\"+
+"XXXXXXXX\"+
+"XXXXXXXX\"
+break;
+
+    }
+    
+    build(design, argument0, argument1);
 
     return;
+
 }
 
 
@@ -248,3 +272,47 @@ for (i=0; i<entity_max; i++)
 }
 
 return false;
+
+
+#define sprite_make //(vertex string, x, y)
+{
+    var px = argument1;
+    var py = argument2;
+    
+    var check = 1;
+    var count_x, count_y;
+    
+    draw_primitive_begin(pr_trianglelist);
+    
+    for(i=0; check; i++)
+    {
+        if (check == string_pos(i, argument0))
+        {
+            count_x = check;
+            count_y = 0;
+            
+            while(count_y <= 8)
+            {
+                count_x -= 8;
+                count_y++;
+            }
+                
+            draw_vertex(px+count_x*2.5, py+count_y*2.5);
+        }
+        
+        if (debug)
+            trace("/!\ Found vertex "+i+" at ("+count_x+", "+count_y+").");
+    }
+    
+    draw_primitive_end();
+    
+    return;
+}
+
+
+#define sprite_get
+
+return
+"0      1"+
+"        "+
+"3      2";
